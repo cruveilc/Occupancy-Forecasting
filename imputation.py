@@ -11,12 +11,7 @@ from sklearn.svm import LinearSVR
 
 from sklearn.model_selection import train_test_split
 
-data = pd.read_excel('values_office.xlsx',
-sheet_name=0,
-header=0,
-index_col=[0],
-keep_default_na=True
-)
+data = pd.read_excel('values_office.xlsx',sheet_name=0,header=0,index_col=[0],keep_default_na=True)
 
 print(data)
 

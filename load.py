@@ -28,12 +28,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 # In[38]:
 
 
-data = pd.read_excel('french_temp.xlsx',
-sheet_name=0,
-header=0,
-index_col=[0],
-keep_default_na=True
-)
+data = pd.read_excel('french_temp.xlsx',sheet_name=0,header=0,index_col=[0],keep_default_na=True)
 print(data)
 
 shiftted=data-data.shift()

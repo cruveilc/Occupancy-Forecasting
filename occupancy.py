@@ -11,7 +11,7 @@ from sklearn.svm import LinearSVR
 
 from sklearn.model_selection import train_test_split
 
-data = pd.read_excel('project.xlsx',
+data = pd.read_excel('output.xlsx',
 sheetname=0,
 header=0,
 index_col=[0],
@@ -111,6 +111,7 @@ def split_sequence(sequence, n_steps):
 n_steps = 12*12
 # split into samples
 X, y = split_sequence(data.label, n_steps)
+
 # summarize the data
 #for i in range(len(X)):
      #print(X[i], y[i])
@@ -140,12 +141,12 @@ model.summary()
 
 X.shape
 
-trainx = X[0:4060]
-trainy = y[0:4060]
-testx = X[4060:]
-testy = y[4060:]
+trainx = X[0:40060]
+trainy = y[0:40060]
+testx = X[40060:]
+testy = y[40060:]
 
-network = model.fit(trainx, trainy, epochs=(70))
+network = model.fit(trainx, trainy, epochs=(10))
 
 yhat = model.predict(testx, verbose=0)
 plt.figure(figsize=(11, 9))

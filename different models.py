@@ -7,7 +7,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.naive_bayes import GaussianNB
 from xgboost import XGBClassifier
 from sklearn import model_selection
@@ -17,35 +17,11 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 import pandas as pd
 
-def run_exps(X_train: pd.DataFrame , y_train: pd.DataFrame, X_test: pd.DataFrame, y_test: pd.DataFrame) -> pd.DataFrame:
-    models = [
-        ('RF', RandomForestClassifier()),
-        ('KNN', KNeighborsClassifier()),
-        ('SVM', SVC()),
-        ('GNB', GaussianNB()),
-        ('XGB', XGBClassifier())
-    ]
-    dfs = []
-    results = []
-    names = []
-    scoring = ['accuracy', 'precision_weighted', 'recall_weighted', 'f1_weighted', 'roc_auc']
-    target_names = ['malignant', 'benign']
-    for name, model in models:
-        kfold = model_selection.KFold(n_splits=5, shuffle=True, random_state=90210)
-        cv_results = model_selection.cross_validate(model, X_train, y_train, cv=kfold, scoring=scoring)
-        clf = model.fit(X_train, y_train)
-        y_pred = clf.predict(X_test)
-        print(name)
-        print(classification_report(y_test, y_pred, target_names=target_names))
-    results.append(cv_results)
-    names.append(name)
-    this_df = pd.DataFrame(cv_results)
-    this_df['model'] = name
-    dfs.append(this_df)
-    final = pd.concat(dfs, ignore_index=True)
-    return final
-
-
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import ElasticNet
+from sklearn.ensemble import GradientBoostingRegressor
 
 
 data = pd.read_excel('values_office.xlsx',
@@ -62,5 +38,37 @@ x=data_training[['Toffice_reference', 'humidity', 'detected_motions', 'power',
 
 x_train, x_test, y_train, y_test = train_test_split(x, lab, test_size = 0.3)
 
-run_exps(x_train, y_train, x_test, y_test)
+
+names=[]
+train_scores =[]
+test_scores =[]
+
+models={'OLS': LinearRegression(),
+       'Ridge': Ridge(),
+       'Lasso': Lasso(),
+       'ElasticN': ElasticNet(),
+       'GBReg': GradientBoostingRegressor()}
+
+for name, model in models.items():
+    name_model = model
+    name_fit = name_model.fit(x_train, y_train)
+    name_pred = name_model.predict(x_test)
+    name_train_score = name_model.score(x_train, y_train).round(4)
+    name_test_score = name_model.score(x_test, y_test).round(4)
+    names.append(name)
+    train_scores.append(name_train_score)
+    test_scores.append(name_test_score)
+
+print(names)
+print(name_train_score)
+print(name_test_score)
+
+
+# score_df = pd.DataFrame(names, train_scores, test_scores)
+# score_df
+
+
+
+
+
 

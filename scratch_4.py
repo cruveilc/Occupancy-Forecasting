@@ -9,10 +9,13 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn import metrics
 from sklearn.svm import LinearSVR
 from pandas.plotting import register_matplotlib_converters
-
+import time
 from sklearn.model_selection import train_test_split
 
 register_matplotlib_converters()
+
+tStart=time.time()
+
 
 data = pd.read_excel('values_office.xlsx',
 sheetname=0,
@@ -22,6 +25,8 @@ keep_default_na=True
 )
 print(data.isnull().values.any())
 print(data.columns)
+
+
 
 #data.plot(figsize=(18,5))
 #plt.show()
@@ -38,30 +43,37 @@ x_train, x_test, y_train, y_test = train_test_split(x, lab, test_size = 0.3)
 
 
 #LinearRegression
-model = sklearn.linear_model.LinearRegression()
-model.fit(x_train, y_train)
+# model = sklearn.linear_model.LinearRegression()
+# model.fit(x_train, y_train)
+#
+# print(model.coef_)
+#
+# predictions = model.predict(x_test)
+# plt.scatter(y_test, predictions)
+# plt.show()
+# np.sqrt(sklearn.metrics.mean_squared_error(y_test, predictions))
 
-print(model.coef_)
+from sklearn.metrics import mean_squared_error,r2_score
+from sklearn.ensemble import GradientBoostingRegressor
 
-predictions = model.predict(x_test)
-plt.scatter(y_test, predictions)
-plt.show()
-np.sqrt(sklearn.metrics.mean_squared_error(y_test, predictions))
+params = {'n_estimators': 500, 'max_depth': 6,
+        'learning_rate': 0.1, 'loss': 'huber','alpha':0.95}
+clf = GradientBoostingRegressor(**params).fit(x_train, y_train)
 
+mse = mean_squared_error(y_test, clf.predict(x_test))
+r2 = r2_score(y_test, clf.predict(x_test))
 
+print("MSE: %.4f" % mse)
+print("R2: %.4f" % r2)
 
 #RandomForest
 
-regressor = RandomForestRegressor(n_estimators=100, random_state=0)
+regressor = RandomForestRegressor(n_estimators=50, random_state=0)
 regressor.fit(x_train, y_train)
 y_pred = regressor.predict(x_test)
 
-#plt.scatter(y_test, y_pred)
-#plt.show()
-#plt.figure(figsize=(11, 9))
-#plt.plot(y_test, label='Orginal')
-#plt.plot(y_pred, label='Predicted', color='Orange')
-#plt.show()
+plt.scatter(y_test, y_pred)
+plt.show()
 
 #data_estimated = data[34544:39432]
 
@@ -69,28 +81,37 @@ data_estimated = pd.concat([data[0:34544],data[39432:]])
 
 x_estimated=data_estimated[['Toffice_reference', 'humidity', 'detected_motions', 'power',
        'office_CO2_concentration', 'door']]
-data_estimated['label']=regressor.predict(x_estimated)
-
-plt.plot(data_estimated['label'])
+data_estimated['label'] = regressor.predict(x_estimated)
 data['label']= pd.concat([data_estimated['label'][0:34544],data['label'][34544:39432],data_estimated['label'][34544:]])
 
 data.label.plot(figsize=(18,5))
+plt.scatter(y_test, y_pred)
 plt.show()
 
+data.to_excel("output.xlsx")
 
-#SVM Regression
+#
+# #SVM Regression
 # svm_reg = LinearSVR(epsilon=0.5)
 # svm_reg.fit(x_train,y_train)
 # y_pred2 = regressor.predict(x_test)
+#
+#
+# mse = mean_squared_error(y_test, clf.predict(x_test))
+# r2 = r2_score(y_test, clf.predict(x_test))
+#
+# print("MSE: %.4f" % mse)
+# print("R2: %.4f" % r2)
+#
+# #plt.scatter(y_test, y_pred2)
+# #plt.show()
+#
+#
+#
+#
+# print('Mean Squared Error:', (metrics.mean_squared_error(y_test, y_pred)))
 
-
-#plt.scatter(y_test, y_pred2)
-#plt.show()
-
-
-
-
-print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
+print ("time=",time.time()-tStart )
 
 #Tin=data[' Tin']
 #Code Explanation: model = LinearRegression() creates a linear regression model and the for loop divides the dataset into three folds (by shuffling its indices). Inside the loop, we fit the data and then assess its performance by appending its score to a list (scikit-learn returns

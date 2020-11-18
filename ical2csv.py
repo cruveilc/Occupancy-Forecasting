@@ -4,6 +4,13 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
+from datetime import datetime
+
+date_str ="2007-04-30 13:30:00+00:00"
+date_str= date_str[:-6]
+print(date_str)
+date_obj = datetime.strptime(date_str,'%Y-%m-%d %H:%M:%S')
+print(date_obj)
 
 evenement = []
 debut = []
@@ -15,27 +22,23 @@ gcal = Calendar.from_ical(g.read().decode())
 for component in gcal.walk():
     if component.name == "VEVENT":
 
-        print(component.get('summary'))
         evenement.append(str((component.get('summary'))))
-        print(component.get('dtstart').dt)
-        debut.append(component.get('dtstart').dt)
+        if len(str(component.get('dtstart').dt)) >12:
+            debut.append(datetime.strptime(str(component.get('dtstart').dt)[:-6],'%Y-%m-%d %H:%M:%S'))
+        else:
+            debut.append(datetime.strptime(str(component.get('dtstart').dt), '%Y-%m-%d'))
         if component.get('dtend') is not None:
-
-            print(component.get('dtend').dt)
             fin.append(component.get('dtend').dt)
         else:
-            print("error")
             fin.append("Nan")
-
-        print(component.get('dtstamp').dt)
 
 g.close()
 
-calendrier = pd.DataFrame({'evenement': evenement,'debut':debut,'fin':fin})
+calendrier = pd.DataFrame({'evenement': evenement,'debut':debut,'fin':fin},index=)
 
-print(type(calendrier['debut'][0]))
+calendrier['debut'] =pd.to_datetime(calendrier.debut)
+
+calendrier.sort_values(['debut'], inplace=True)
+print(calendrier)
 
 
-#calendrier.sort('debut')
-
-print(calendrier[0:50])

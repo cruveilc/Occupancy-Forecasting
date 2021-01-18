@@ -3,7 +3,7 @@ In this university project for energy systems students who wanted a first insigh
 In this small project the intent was to recreate a simple estimation model based on recently made literature and to focus on diferent techniques of forecasting to be able to forecast 24 hours ahead in the building.
 It is an initiative project to machine learning techniques so most of the models are simple except for the LightGBM model that was inspired by miniaxixi https://github.com/minaxixi/Kaggle-M5-Forecasting-Accuracy/blob/master/model_recursive.ipynb
 Tested models were MLP, CNN-LSTM, LSTM with different features (date, calendar, feature engineering...etc...) for different forecasting horizons but also different time sample.
-The models are basics and is a good way for a beginner to have an insight into today's great tools to simple make forecasting and any comment or advice is welcome.
+The models are basics and is a good way for a beginner to have an insight into today's great tools to simply make forecasting and any comment or advice is welcome.
 
 This forecasting project is accompanied by an example of energy savings that could be done with good forecasting results. It is a simplified predictive controller coded in python with an example of Kivy Application that could be implmented to make an interactive and low cost dashboard for inhabitants by using a Raspberry Pi (compatible with Kivy).
 

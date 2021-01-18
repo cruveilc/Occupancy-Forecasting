@@ -1,0 +1,131 @@
+#:kivy 1.0
+#:import kivy kivy
+#:import win kivy.core.window
+#:import Factory kivy.factory.Factory
+
+
+
+
+<Gallery>:
+    orientation: 'vertical'
+    size_hint: 1, 1
+
+    StackLayout:
+        size_hint: 1, 0.1
+
+
+        Label:
+            size_hint: 0.4, 1
+            text: 'ENERGY MANAGEMENT'
+            background_color: 1, 1, 0, 1
+            bold: True
+            italic: True
+
+
+
+
+        Slider:
+            size_hint: 0.5, 1
+            id: slider
+            min: 0
+            max: 100
+            step: 1
+            orientation: 'horizontal'
+            on_value: root.add_one(value = slider_image.value)
+
+    StackLayout:
+        size_hint: 1, 0.8
+
+        BoxLayout:
+            id: espace10
+
+
+            size_hint: 0.5, 0.5
+
+        BoxLayout:
+            id: espace11
+            size_hint: 0.5, 0.5
+
+        BoxLayout:
+            id: espace12
+            size_hint: 0.5, 0.5
+
+        BoxLayout:
+            id: espace13
+            size_hint: 0.5, 0.5
+
+    StackLayout:
+        size_hint: 1,0.1
+        id: espace
+        Label:
+            size_hint: 0.25,1
+            text: "in 2 hours"
+        Label:
+            size_hint: 0.25,1
+            text: "25°"
+
+
+
+    StackLayout:
+        size_hint: 1,0.1
+        pos_hint: {'bottom': 1}
+        Button:
+            size_hint: 0.5,1
+            text: "Update"
+        Button:
+            size_hint: 0.5,1
+            text: "Optimize"
+
+
+
+
+<PhotoButton>:
+    size_hint: 0.25, 1
+    id: img
+    on_press: root.open()
+
+    Image:
+        source: root.source
+        size: self.parent.size
+        y: self.parent.y
+        x: self.parent.x
+
+
+<MyPopup>:
+    auto_dismiss: True
+    title: root.source
+    BoxLayout:
+        orientation: "vertical"
+        StackLayout:
+            size_hint_y: 0.1
+            Button:
+                size_hint: 0.2 , 0.2
+                text: "<"
+                y: self.parent.y
+                x: self.parent.x
+                on_press: root.gauche()
+                on_release: root.dismiss()
+            Button:
+                size_hint: 0.2 , 0.2
+                text: ">"
+                y: self.parent.y
+                x: 650+self.parent.x
+                on_press: root.droite()
+                on_release: root.dismiss()
+            Button:
+                size_hint: 0.2 , 0.2
+                text: "Rotate"
+                y: self.parent.y
+                x: 700+self.parent.x
+                on_press: root.tourner()
+
+        Image:
+            source: root.source
+            size_hint: 0.9 , 0.2
+            canvas.before:
+                PushMatrix
+                Rotate:
+                    angle: root.angle
+                    origin: self.center
+            canvas.after:
+                PopMatrix
